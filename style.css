@@ -1,0 +1,84 @@
+:root {
+  color-scheme: dark;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+  color: #f5ecdb;
+  background: #282c23;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: radial-gradient(ellipse at 50% 0%, #414536, #25291f 75%); min-height: 100vh; }
+main {
+  width: min(100%, 68rem);
+  margin: auto;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+}
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: .8rem 1.5rem; margin-bottom: 1rem; }
+.eyebrow { color: #ddc491; letter-spacing: .18em; font-size: .875rem; margin: 0 0 .25rem; }
+h1 { font: 500 clamp(2rem, 6vw, 3.8rem)/1 Georgia, serif; margin: 0; }
+.trust { display: grid; gap: .18rem; width: min(100%, 12rem); font-size: .875rem; }
+.trust label { display: flex; justify-content: space-between; gap: .5rem; }
+meter { width: 100%; height: .75rem; accent-color: #cbd198; }
+meter::-webkit-meter-bar { background: #20241c; border-color: #666c54; }
+meter::-webkit-meter-optimum-value { background: #cbd198; }
+#bond, .hint { color: #cfceb9; }
+.room {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  border: 1px solid #888267;
+  border-radius: 1.5rem;
+  background: #937253 url("./assets/room.webp") center / 100% 100% no-repeat;
+  box-shadow: 0 .8rem 2rem #16190f66;
+}
+.activity { position: absolute; z-index: 2; top: .75rem; left: .75rem; background: #282c23eb; padding: .4rem .75rem; border-radius: 1rem; font-size: .875rem; }
+.pet {
+  position: absolute;
+  left: 47%;
+  top: 84%;
+  width: 30%;
+  transform: translate(-50%, -100%);
+  transition: left .65s ease, top .65s ease;
+  pointer-events: none;
+}
+.pet img { display: block; width: 100%; transform-origin: 50% 88%; filter: drop-shadow(0 .35rem .3rem #251a1580); animation: breathe 3s ease-in-out infinite; }
+.pet[data-place="ledge"] { left: 49%; top: 44%; }
+.pet[data-place="nest"] { left: 76%; top: 74%; width: 19%; }
+.pet[data-place="near"] { left: 35%; top: 94%; }
+.pet[data-place="sand"] { left: 67%; top: 89%; }
+.pet[data-action="jump"] img { animation: jump .65s ease-in-out; }
+.pet[data-action="sleep"] img { animation-duration: 5s; transform: scaleY(.91); }
+.pet[data-action="groom"] img, .pet[data-action="feed"] img { animation: bob .55s ease-in-out infinite; }
+.pet[data-action="pet"] img { animation: lean 1.2s ease-in-out infinite; }
+.pet[data-action="bath"] img { animation: roll .8s ease-in-out infinite alternate; }
+.bath { display: none; position: absolute; left: 67%; top: 89%; width: 27%; height: 9%; transform: translate(-50%, -45%); border-radius: 50%; background: #d7c09a; border: .35rem solid #8a6448; box-shadow: 0 .2rem .5rem #33221d70; }
+.room:has(.pet[data-action="bath"]) .bath { display: block; }
+@keyframes breathe { 50% { scale: 1 1.025; } }
+@keyframes jump { 45% { translate: 0 -26%; scale: .94 1.08; } }
+@keyframes bob { 50% { rotate: -5deg; } }
+@keyframes lean { 50% { rotate: -9deg; } }
+@keyframes roll { from { rotate: -18deg; } to { rotate: 18deg; } }
+.care { margin-top: .9rem; }
+#message { min-height: 1.6em; line-height: 1.6; margin: 0 0 .75rem; }
+.actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+button {
+  min-height: 3.2rem;
+  border: 1px solid #858b6d;
+  border-radius: .85rem;
+  background: #424a35;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  padding: .35rem;
+  touch-action: manipulation;
+}
+button span { color: #e2ca91; margin-right: .28em; }
+button:active { background: #5d674b; }
+button:focus-visible { outline: 2px solid #f6db99; outline-offset: 3px; }
+button:disabled { opacity: .55; }
+.hint, #save-warning { font-size: .875rem; line-height: 1.5; margin: .65rem 0 0; }
+@media (max-width: 380px) { button span { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .pet { transition: none; }
+  .pet img, .pet[data-action] img { animation: none; }
+}
