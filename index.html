@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#282c23">
-  <title>Little Chinchilla</title>
+  <title>绵绵云</title>
   <link rel="stylesheet" href="./style.css">
   <script src="./game.js" defer></script>
 </head>
 <body>
   <main>
     <header>
-      <div><p class="eyebrow">龙猫小屋</p><h1>Little Chinchilla</h1></div>
+      <div><p class="eyebrow">龙猫养成</p><h1>绵绵云</h1></div>
       <div class="stats">
         <div class="growth">
           <strong id="level">Level 1 · Shy（害羞）</strong>
@@ -28,7 +28,7 @@
       </div>
     </header>
 
-    <section class="room" aria-label="傍晚的龙猫小屋">
+    <section class="room" aria-label="棉花糖的房间">
       <span class="activity" id="activity">观察四周</span>
       <div class="bath" aria-hidden="true" hidden></div>
       <div class="bath-rim" aria-hidden="true" hidden></div>
@@ -114,7 +114,7 @@
     </section>
 
     <section class="care" aria-label="照顾龙猫">
-      <p id="message" role="status">小银正在熟悉你的气味。可以先给它一点提摩西草。</p>
+      <p id="message" role="status">棉花糖正在熟悉你的气味。可以先给它一点提摩西草。</p>
       <div class="actions">
         <button type="button" data-care="feed"><span aria-hidden="true">🌿</span>Feed 喂食</button>
         <button type="button" data-care="pet"><span aria-hidden="true">✦</span>Play 轻轻抚摸</button>
@@ -122,7 +122,7 @@
         <button type="button" data-care="toy" disabled>Toy 小球<small class="lock">🔒 Level 2（100 XP）解锁</small></button>
         <button type="button" data-care="come" disabled>Come Here 靠近<small class="lock">🔒 Level 3（230 XP）解锁</small></button>
       </div>
-      <p class="hint" id="hint">每次互动后稍等片刻，小银会自己休息、跳跃和梳理毛发。</p>
+      <p class="hint" id="hint">每次互动后稍等片刻，棉花糖会自己休息、跳跃和梳理毛发。</p>
       <button type="button" id="reset">Reset Progress 重置进度</button>
       <p id="save-warning" hidden>浏览器无法保存进度，本次进度只在当前页面保留。</p>
     </section>
