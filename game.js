@@ -2,6 +2,8 @@
 
 const saveKey = "little-chinchilla:v1";
 const pet = document.querySelector("#pet");
+const hay = document.querySelector(".hay");
+const bathProps = document.querySelectorAll(".bath, .bath-rim, .dust");
 const activity = document.querySelector("#activity");
 const meter = document.querySelector("#trust");
 const score = document.querySelector("#score");
@@ -28,6 +30,8 @@ function showActivity(action, place, label) {
   pet.dataset.action = action;
   pet.dataset.place = place;
   activity.textContent = label;
+  hay.hidden = action !== "feed";
+  bathProps.forEach((prop) => { prop.hidden = action !== "bath"; });
 }
 
 let timer;
@@ -51,7 +55,7 @@ function autonomousActivity() {
 }
 
 const care = {
-  feed: { action: ["feed", "floor", "吃提摩西草"], gain: 8, text: "小银捧起提摩西草，慢慢嚼了起来。" },
+  feed: { action: ["feed", "hay", "吃提摩西草"], gain: 8, text: "小银捧起提摩西草，慢慢嚼了起来。" },
   pet: { action: ["pet", "near", "接受轻抚"], gain: 10, text: "小银放松下来，轻轻向你的手靠近。" },
   bath: { action: ["bath", "sand", "正在沙浴"], gain: 6, text: "小银跳进浴盆，在细细的浴粉里打了个滚。" },
 };
