@@ -12,10 +12,17 @@
   <main>
     <header>
       <div><p class="eyebrow">龙猫小屋</p><h1>Little Chinchilla</h1></div>
-      <div class="trust">
-        <label for="trust">信任度 <span id="score">0 / 100</span></label>
-        <meter id="trust" min="0" max="100" value="0">0 / 100</meter>
-        <span id="bond">还在熟悉你</span>
+      <div class="stats">
+        <div class="growth">
+          <strong id="level">Level 1 · Shy（害羞）</strong>
+          <label for="xp-progress" id="xp-label">0 / 5 XP</label>
+          <progress id="xp-progress" max="5" value="0" aria-labelledby="xp-label"></progress>
+        </div>
+        <div class="trust">
+          <label for="trust">信任度 <span id="score">0 / 100</span></label>
+          <meter id="trust" min="0" max="100" value="0">0 / 100</meter>
+          <span id="bond">还在熟悉你</span>
+        </div>
       </div>
     </header>
 
@@ -26,6 +33,7 @@
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
         </div>
       </div>
+      <div class="toy-ball" aria-hidden="true" hidden></div>
       <div class="bath" aria-hidden="true" hidden></div>
       <div class="bath-rim" aria-hidden="true" hidden></div>
       <div class="dust" aria-hidden="true" hidden><i></i><i></i><i></i></div>
@@ -37,11 +45,14 @@
     <section class="care" aria-label="照顾龙猫">
       <p id="message" role="status">小银正在熟悉你的气味。可以先给它一点提摩西草。</p>
       <div class="actions">
-        <button type="button" data-care="feed"><span aria-hidden="true">🌿</span>喂食</button>
-        <button type="button" data-care="pet"><span aria-hidden="true">✦</span>轻轻抚摸</button>
-        <button type="button" data-care="bath"><span aria-hidden="true">◒</span>准备沙浴</button>
+        <button type="button" data-care="feed"><span aria-hidden="true">🌿</span>Feed 喂食</button>
+        <button type="button" data-care="pet"><span aria-hidden="true">✦</span>Play 轻轻抚摸</button>
+        <button type="button" data-care="bath"><span aria-hidden="true">◒</span>Bath 沙浴</button>
+        <button type="button" data-care="toy" disabled>Toy 小球<small class="lock">🔒 Level 2（5 XP）解锁</small></button>
+        <button type="button" data-care="come" disabled>Come Here 靠近<small class="lock">🔒 Level 3（10 XP）解锁</small></button>
       </div>
       <p class="hint" id="hint">每次互动后稍等片刻，小银会自己休息、跳跃和梳理毛发。</p>
+      <button type="button" id="reset">Reset Progress 重置进度</button>
       <p id="save-warning" hidden>浏览器无法保存进度，本次进度只在当前页面保留。</p>
     </section>
   </main>
