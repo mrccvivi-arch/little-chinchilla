@@ -2,7 +2,8 @@
 
 const saveKey = "little-chinchilla:v1";
 const pet = document.querySelector("#pet");
-const hay = document.querySelector(".hay");
+const feedingDuration = 3000;
+pet.style.setProperty("--feeding-duration", feedingDuration + "ms");
 const ball = document.querySelector(".toy-ball");
 const levelLabel = document.querySelector("#level");
 const xpLabel = document.querySelector("#xp-label");
@@ -96,7 +97,6 @@ function showActivity(action, place, label) {
   pet.dataset.action = action;
   pet.dataset.place = place;
   activity.textContent = label;
-  hay.hidden = action !== "feed";
   ball.hidden = action !== "toy";
   bathProps.forEach((prop) => { prop.hidden = action !== "bath"; });
 }
@@ -172,7 +172,7 @@ function applyCare(kind) {
     updateButtons();
     showActivity("idle", pet.dataset.place, "休息一下");
     scheduleActivity(1800);
-  }, 2400);
+  }, kind === "feed" ? feedingDuration : 2400);
 }
 
 reset.addEventListener("click", () => {
