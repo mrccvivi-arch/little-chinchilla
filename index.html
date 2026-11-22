@@ -15,8 +15,10 @@
       <div class="stats">
         <div class="growth">
           <strong id="level">Level 1 · Shy（害羞）</strong>
-          <label for="xp-progress" id="xp-label">0 / 5 XP</label>
-          <progress id="xp-progress" max="5" value="0" aria-labelledby="xp-label"></progress>
+          <span id="xp-label">0 / 100 XP</span>
+          <div id="xp-progress" role="progressbar" aria-label="升级进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="xp-fill"></div>
+          </div>
         </div>
         <div class="trust">
           <label for="trust">信任度 <span id="score">0 / 100</span></label>
@@ -34,7 +36,7 @@
       <div class="dust" aria-hidden="true" hidden><i></i><i></i><i></i></div>
       <div class="pet" id="pet" data-action="idle" data-place="floor" aria-hidden="true">
         <img src="./assets/chinchilla.webp" width="720" height="480" alt="" draggable="false">
-        <svg class="feeding" width="720" height="480" viewBox="0 0 720 480" aria-hidden="true" focusable="false">
+        <svg class="pet-art" width="720" height="480" viewBox="0 0 720 480" aria-hidden="true" focusable="false">
           <defs>
             <image id="feeding-fur" href="./assets/chinchilla.webp" width="720" height="480"/>
             <clipPath id="feeding-left-paw">
@@ -42,6 +44,9 @@
             </clipPath>
             <clipPath id="feeding-right-paw">
               <path d="M219 289 Q237 285 237 299 Q229 308 221 313 Q214 338 201 339 Q189 335 195 317 Q201 299 219 289Z"/>
+            </clipPath>
+            <clipPath id="pet-ear">
+              <path d="M218 128 C221 108 232 45 269 19 C305 -3 342 4 333 45 C325 92 298 126 267 146 Q246 149 218 128Z"/>
             </clipPath>
             <radialGradient id="feeding-feather">
               <stop offset=".68" stop-color="white"/>
@@ -56,6 +61,9 @@
           </defs>
           <!-- Draw the body and all moving parts in the same sprite coordinates. -->
           <use href="#feeding-fur"/>
+          <g class="pet-ear">
+            <use href="#feeding-fur" clip-path="url(#pet-ear)" transform="rotate(-3 248 138)"/>
+          </g>
           <g class="feeding-chest" mask="url(#feeding-chest)">
             <use href="#feeding-fur" x="-104" y="-7"/>
           </g>
@@ -78,10 +86,16 @@
           <g class="feeding-paw">
             <use href="#feeding-fur" clip-path="url(#feeding-right-paw)"/>
           </g>
-          <g class="feeding-blink">
+          <g class="pet-eyes">
             <g mask="url(#feeding-eye)"><use href="#feeding-fur" y="-25"/></g>
             <path d="M169 155 Q184 165 197 150" fill="none" stroke="#51453b" stroke-width="3.5" stroke-linecap="round"/>
           </g>
+        </svg>
+        <svg class="pet-hand" viewBox="0 0 162 94" focusable="false">
+          <path d="M113 16 152 13Q159 13 159 20L159 52Q158 58 150 59L119 61Z" fill="#7f967e" stroke="#545f4b" stroke-width="3"/>
+          <path d="M120 17 127 16 133 59 124 61Z" fill="#d3ddad" stroke="#545f4b" stroke-width="3"/>
+          <path d="M121 20C102 13 85 11 70 24L57 34 25 46Q13 52 16 59Q18 63 26 61L57 52 17 74Q7 81 13 86Q17 90 24 86L66 66 31 87Q24 92 33 93Q38 94 46 90L80 72C98 75 108 69 126 58Z" fill="#efb58f" stroke="#a76751" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M71 48Q88 43 96 53M65 64Q73 60 81 61" fill="none" stroke="#cc9074" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </div>
     </section>
@@ -92,8 +106,8 @@
         <button type="button" data-care="feed"><span aria-hidden="true">🌿</span>Feed 喂食</button>
         <button type="button" data-care="pet"><span aria-hidden="true">✦</span>Play 轻轻抚摸</button>
         <button type="button" data-care="bath"><span aria-hidden="true">◒</span>Bath 沙浴</button>
-        <button type="button" data-care="toy" disabled>Toy 小球<small class="lock">🔒 Level 2（5 XP）解锁</small></button>
-        <button type="button" data-care="come" disabled>Come Here 靠近<small class="lock">🔒 Level 3（10 XP）解锁</small></button>
+        <button type="button" data-care="toy" disabled>Toy 小球<small class="lock">🔒 Level 2（100 XP）解锁</small></button>
+        <button type="button" data-care="come" disabled>Come Here 靠近<small class="lock">🔒 Level 3（230 XP）解锁</small></button>
       </div>
       <p class="hint" id="hint">每次互动后稍等片刻，小银会自己休息、跳跃和梳理毛发。</p>
       <button type="button" id="reset">Reset Progress 重置进度</button>
