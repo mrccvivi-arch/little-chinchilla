@@ -2,6 +2,11 @@
 
 const saveKey = "little-chinchilla:v1";
 const pet = document.querySelector("#pet");
+const feeding = pet.querySelector(".feeding");
+const [leftPaw, rightPaw] = feeding.querySelectorAll(".feeding-paw");
+const feedingGrass = feeding.querySelector(".feeding-grass");
+const feedingMuzzle = feeding.querySelector(".feeding-muzzle");
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const feedingDuration = 3000;
 pet.style.setProperty("--feeding-duration", feedingDuration + "ms");
 const ball = document.querySelector(".toy-ball");
@@ -97,8 +102,42 @@ function showActivity(action, place, label) {
   pet.dataset.action = action;
   pet.dataset.place = place;
   activity.textContent = label;
+  cancelAnimationFrame(feedingFrame);
+  if (action === "feed") playFeeding();
   ball.hidden = action !== "toy";
   bathProps.forEach((prop) => { prop.hidden = action !== "bath"; });
+}
+
+let feedingFrame;
+
+function playFeeding() {
+  const start = performance.now();
+
+  function draw(progress) {
+    // The translations and scales are in the original sprite's 720 × 480 grid.
+    const lift = Math.max(0, Math.min(1, progress / 0.14, (0.94 - progress) / 0.18));
+    const easedLift = lift * lift * (3 - 2 * lift);
+    const remainingGrass = Math.max(0.10, 0.82 - Math.max(0, progress - 0.18) * 1.25);
+    const chew = 0.67 + 0.33 * Math.sin(progress * 15 * Math.PI) ** 2;
+    leftPaw.setAttribute("transform", `translate(${-49 * easedLift} ${-70 * easedLift})`);
+    rightPaw.setAttribute("transform", `translate(${-67 * easedLift} ${-72 * easedLift})`);
+    feedingGrass.setAttribute("transform", `scale(${remainingGrass})`);
+    feedingMuzzle.setAttribute("transform", `scale(1 ${chew})`);
+  }
+
+  if (reducedMotion.matches) {
+    draw(0.15);
+    return;
+  }
+
+  function frame(now) {
+    const progress = Math.max(0, Math.min(1, (now - start) / feedingDuration));
+    draw(progress);
+    if (progress < 1) feedingFrame = requestAnimationFrame(frame);
+  }
+
+  draw(0);
+  feedingFrame = requestAnimationFrame(frame);
 }
 
 let timer;
@@ -133,7 +172,7 @@ function autonomousActivity() {
 }
 
 const care = {
-  feed: { action: ["feed", "hay", "吃提摩西草"], gain: 8, xp: 1, text: "小银捧起提摩西草，慢慢嚼了起来。" },
+  feed: { action: ["feed", "floor", "吃提摩西草"], gain: 8, xp: 1, text: "小银捧起提摩西草，慢慢嚼了起来。" },
   pet: { action: ["pet", "near", "接受轻抚"], gain: 10, text: "小银放松下来，轻轻向你的手靠近。" },
   toy: { action: ["toy", "floor", "研究小球"], gain: 0, xp: 1, text: "小银用鼻尖轻轻推了一下小球。" },
   come: { action: ["pet", "near", "主动靠近"], gain: 0, text: [
