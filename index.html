@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#282c23">
   <title>绵绵云</title>
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./forest.css">
+  <script src="./forest.js" defer></script>
   <script src="./game.js" defer></script>
 </head>
 <body>
@@ -28,7 +30,11 @@
       </div>
     </header>
 
-    <section class="room" aria-label="棉花糖的房间">
+    <section id="cabin-room" class="room" aria-label="棉花糖的房间">
+      <button class="cabin-door" id="enter-forest" type="button">
+        <span class="door-panel" aria-hidden="true"></span>
+        <span class="door-label">去森林</span>
+      </button>
       <span class="activity" id="activity">观察四周</span>
       <div class="bath" aria-hidden="true" hidden></div>
       <div class="bath-rim" aria-hidden="true" hidden></div>
@@ -113,7 +119,7 @@
       </div>
     </section>
 
-    <section class="care" aria-label="照顾龙猫">
+    <section id="cabin-care" class="care" aria-label="照顾龙猫">
       <p id="message" role="status">棉花糖正在熟悉你的气味。可以先给它一点提摩西草。</p>
       <div class="actions">
         <button type="button" data-care="feed"><span aria-hidden="true">🌿</span>Feed 喂食</button>
@@ -124,8 +130,27 @@
       </div>
       <p class="hint" id="hint">每次互动后稍等片刻，棉花糖会自己休息、跳跃和梳理毛发。</p>
       <button type="button" id="reset">Reset Progress 重置进度</button>
-      <p id="save-warning" hidden>浏览器无法保存进度，本次进度只在当前页面保留。</p>
     </section>
+
+    <section class="forest" id="forest" aria-labelledby="forest-title" hidden>
+      <div class="forest-heading">
+        <h2 id="forest-title" tabindex="-1">林间小径</h2>
+        <button id="return-cabin" type="button">返回小屋</button>
+      </div>
+      <div class="forest-viewport" aria-label="棉花糖在林间小径上">
+        <div class="forest-world">
+          <div class="forest-pet" aria-hidden="true">
+            <img src="./assets/chinchilla.webp" width="720" height="480" alt="" draggable="false">
+          </div>
+        </div>
+      </div>
+      <div class="forest-controls" role="group" aria-label="移动棉花糖">
+        <button type="button" data-move="-1" aria-label="向左移动">← 向左</button>
+        <p class="hint">长按按钮或方向键移动</p>
+        <button type="button" data-move="1" aria-label="向右移动">向右 →</button>
+      </div>
+    </section>
+    <p id="save-warning" hidden>浏览器无法保存进度，本次进度只在当前页面保留。</p>
   </main>
 </body>
 </html>
