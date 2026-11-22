@@ -70,6 +70,16 @@ let xp = 0;
 let trust = 0;
 let lastDailyDay = "";
 let lastAward = {};
+let worldState = readWorld();
+let displayedScene;
+const cabinPanels = document.querySelectorAll("#cabin-room, #cabin-care");
+const forestRoot = document.querySelector("#forest");
+const enterForest = document.querySelector("#enter-forest");
+const returnCabin = document.querySelector("#return-cabin");
+const forestScene = createForestScene(forestRoot, (position) => {
+  worldState.forest.position = position;
+  saveProgress();
+});
 
 function levelForXp(total) {
   for (let index = levelThresholds.length - 1; index >= 0; index--) {
@@ -106,6 +116,7 @@ function loadProgress() {
     trust = Number.isInteger(saved.trust) ? Math.max(0, Math.min(100, saved.trust)) : 0;
     lastDailyDay = /^\d{4}-\d{2}-\d{2}$/.test(saved.lastDailyDay) ? saved.lastDailyDay : "";
     lastAward = { ...saved.lastAward };
+    worldState = readWorld(saved.world);
     return saved.version !== saveVersion;
   } catch {
     warning.hidden = false;
@@ -123,6 +134,7 @@ function saveProgress() {
       unlocked: { feed: true, toy: level >= 2, come: level >= 3 },
       lastDailyDay,
       lastAward,
+      world: worldState,
     }));
     warning.hidden = true;
   } catch {
@@ -238,6 +250,7 @@ let lastActivity;
 let lastInteraction = Date.now();
 
 function updateButtons() {
+  enterForest.disabled = busy;
   const level = levelForXp(xp);
   buttons.forEach((button) => {
     const locked = level < (requiredLevel[button.dataset.care] ?? 1);
@@ -257,7 +270,7 @@ function pick(options) {
 }
 
 function autonomousActivity() {
-  if (document.hidden || busy) return;
+  if (document.hidden || busy || displayedScene !== "cabin") return;
   const roll = Math.random();
   if (Date.now() - lastInteraction >= 25000 && roll < 0.24) {
     showActivity("tilt", "floor", "歪着头看看你");
@@ -323,7 +336,7 @@ function awardXp(kind, now) {
 }
 
 function applyCare(kind) {
-  if (busy) return;
+  if (busy || displayedScene !== "cabin") return;
   const previousLevel = levelForXp(xp);
   if (previousLevel < (requiredLevel[kind] ?? 1)) return;
 
@@ -372,6 +385,7 @@ reset.addEventListener("click", () => {
   lastInteraction = Date.now();
   xp = 0;
   trust = 0;
+  worldState = readWorld();
   saveProgress();
   showProgress();
   showActivity("idle", "floor", "观察四周");
@@ -379,6 +393,37 @@ reset.addEventListener("click", () => {
   schedule(autonomousActivity, 4500);
 });
 
+function showScene(moveFocus = false) {
+  if (displayedScene === worldState.scene) return;
+  displayedScene = worldState.scene;
+  const outdoors = displayedScene === "forest";
+  cabinPanels.forEach((panel) => { panel.hidden = outdoors; });
+  forestRoot.hidden = !outdoors;
+
+  if (outdoors) {
+    clearTimeout(activityTimer);
+    busy = false;
+    showActivity("idle", "floor", "观察四周");
+    updateButtons();
+    forestScene.show(worldState.forest.position);
+    if (moveFocus) document.querySelector("#forest-title").focus();
+  } else {
+    forestScene.hide();
+    schedule(autonomousActivity, 4500);
+    if (moveFocus) enterForest.focus();
+  }
+}
+
+function navigateTo(scene) {
+  if (busy || displayedScene === scene) return;
+  if (displayedScene === "forest") worldState.forest.position = forestScene.getPosition();
+  worldState.scene = scene;
+  showScene(true);
+  saveProgress();
+}
+
+enterForest.addEventListener("click", () => navigateTo("forest"));
+returnCabin.addEventListener("click", () => navigateTo("cabin"));
 buttons.forEach((button) => {
   button.addEventListener("click", () => applyCare(button.dataset.care));
 });
@@ -386,12 +431,13 @@ window.addEventListener("storage", (event) => {
   if (event.key !== saveKey || event.storageArea !== localStorage || !event.newValue) return;
   loadProgress();
   showProgress();
+  showScene();
 });
 document.addEventListener("visibilitychange", () => {
-  if (busy) return;
+  if (busy || displayedScene !== "cabin") return;
   if (document.hidden) clearTimeout(activityTimer);
   else schedule(autonomousActivity, 4200);
 });
 if (loadProgress()) saveProgress();
 showProgress();
-schedule(autonomousActivity, 4500);
+showScene();
