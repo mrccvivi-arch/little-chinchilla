@@ -8,10 +8,14 @@ const feeding = pet.querySelector(".pet-art");
 const [leftPaw, rightPaw] = feeding.querySelectorAll(".feeding-paw");
 const feedingGrass = feeding.querySelector(".feeding-grass");
 const feedingMuzzle = feeding.querySelector(".feeding-muzzle");
+const petPose = feeding.querySelector(".pet-pose");
+const toyBall = feeding.querySelector(".toy-ball");
+const toyBallSpin = toyBall.querySelector(".toy-ball-spin");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const feedingDuration = 3000;
 const actionDurations = {
   feed: feedingDuration,
+  playingBall: 3600,
   stroke: 2700,
   stretch: 1500,
   tilt: 1800,
@@ -20,7 +24,6 @@ const actionDurations = {
 for (const [action, duration] of Object.entries(actionDurations)) {
   pet.style.setProperty(`--${action}-duration`, duration + "ms");
 }
-const ball = document.querySelector(".toy-ball");
 const levelLabel = document.querySelector("#level");
 const xpLabel = document.querySelector("#xp-label");
 const progress = document.querySelector("#xp-progress");
@@ -149,21 +152,40 @@ function showActivity(action, place, label) {
   pet.dataset.action = action;
   pet.dataset.place = place;
   activity.textContent = label;
-  cancelAnimationFrame(feedingFrame);
+  cancelAnimationFrame(spriteFrame);
+  petPose.removeAttribute("transform");
   if (action === "feed") playFeeding();
-  ball.hidden = action !== "toy";
+  if (action === "playingBall") playBall();
   bathProps.forEach((prop) => { prop.hidden = action !== "bath"; });
 }
 
-let feedingFrame;
+let spriteFrame;
+
+function animateSprite(duration, draw, staticProgress) {
+  if (reducedMotion.matches) {
+    draw(staticProgress);
+    return;
+  }
+
+  const start = performance.now();
+  function frame(now) {
+    const progress = Math.max(0, Math.min(1, (now - start) / duration));
+    draw(progress);
+    if (progress < 1) spriteFrame = requestAnimationFrame(frame);
+  }
+  draw(0);
+  spriteFrame = requestAnimationFrame(frame);
+}
+
+function smooth(value) {
+  return value * value * (3 - 2 * value);
+}
 
 function playFeeding() {
-  const start = performance.now();
-
   function draw(progress) {
     // The translations and scales are in the original sprite's 720 × 480 grid.
     const lift = Math.max(0, Math.min(1, progress / 0.14, (0.94 - progress) / 0.18));
-    const easedLift = lift * lift * (3 - 2 * lift);
+    const easedLift = smooth(lift);
     const remainingGrass = Math.max(0.10, 0.82 - Math.max(0, progress - 0.18) * 1.25);
     const chew = 0.67 + 0.33 * Math.sin(progress * 15 * Math.PI) ** 2;
     leftPaw.setAttribute("transform", `translate(${-49 * easedLift} ${-70 * easedLift})`);
@@ -172,19 +194,42 @@ function playFeeding() {
     feedingMuzzle.setAttribute("transform", `scale(1 ${chew})`);
   }
 
-  if (reducedMotion.matches) {
-    draw(0.15);
-    return;
-  }
+  animateSprite(feedingDuration, draw, 0.15);
+}
 
-  function frame(now) {
-    const progress = Math.max(0, Math.min(1, (now - start) / feedingDuration));
-    draw(progress);
-    if (progress < 1) feedingFrame = requestAnimationFrame(frame);
-  }
+// Each pose uses the same 720 × 480 sprite coordinates, with time in milliseconds.
+// Hold the ball at its starting position until each paw-contact pose is reached.
+const ballPoses = [
+  // time, body X, lean, paw X, paw Y, ball X
+  [0, 0, 0, 0, 0, 94],
+  [450, 0, -8, 0, 0, 94],
+  [1000, -8, -10, -41, 40, 94],
+  [1160, -18, -12, -46, 42, 76],
+  [1570, -56, -4, 0, 0, 46],
+  [1820, -75, -7, -25, -4, 46],
+  [2190, -83, -11, -44, 32, 46],
+  [2350, -67, -8, -14, 40, 67],
+  [2830, -22, -4, 0, 0, 128],
+  [3300, 0, 0, 0, 0, 128],
+  [3600, 0, 0, 0, 0, 128],
+];
 
-  draw(0);
-  feedingFrame = requestAnimationFrame(frame);
+function playBall() {
+  rightPaw.removeAttribute("transform");
+  animateSprite(actionDurations.playingBall, (progress) => {
+    const elapsed = progress * actionDurations.playingBall;
+    const endIndex = Math.max(1, ballPoses.findIndex(([time]) => time >= elapsed));
+    const from = ballPoses[endIndex - 1];
+    const to = ballPoses[endIndex];
+    const fraction = smooth((elapsed - from[0]) / (to[0] - from[0]));
+    const [bodyX, lean, pawX, pawY, ballX] = from.slice(1).map((start, index) => {
+      return start + (to[index + 1] - start) * fraction;
+    });
+    petPose.setAttribute("transform", `translate(${bodyX} 0) rotate(${lean} 230 455)`);
+    leftPaw.setAttribute("transform", `translate(${pawX} ${pawY})`);
+    toyBall.setAttribute("transform", `translate(${ballX} 410)`);
+    toyBallSpin.setAttribute("transform", `rotate(${(ballX - 94) * 180 / (34 * Math.PI)})`);
+  }, 1000 / actionDurations.playingBall);
 }
 
 let activityTimer;
@@ -241,7 +286,7 @@ function finishActivity() {
 const care = {
   feed: { action: ["feed", "floor", "吃提摩西草"], gain: 8, xp: 5, xpCooldown: 30000, text: "小银捧起提摩西草，慢慢嚼了起来。" },
   pet: { action: ["stroke", "near", "闭上眼享受轻抚"], gain: 10, xp: 3, xpCooldown: 20000, text: "小银眯起眼睛，耳朵轻轻抖了抖。" },
-  toy: { action: ["toy", "floor", "研究小球"], xp: 1, xpCooldown: 30000, text: "小银用鼻尖轻轻推了一下小球。" },
+  toy: { action: ["playingBall", "floor", "用前爪推着小球玩"], xp: 1, xpCooldown: 30000, text: "小银伸出前爪，把小球推来推去。" },
   come: { action: ["pet", "near", "主动靠近"], text: [
     "小银小跑过来，停在你身边。",
     "小银凑近嗅了嗅，在你旁边坐了下来。",

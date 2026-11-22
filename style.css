@@ -50,8 +50,9 @@ meter::-webkit-meter-optimum-value { background: #cbd198; }
 .pet[data-action="sleep"] img { animation-duration: 5s; transform: scaleY(.91); }
 .pet[data-action="groom"] img { animation: bob .55s ease-in-out infinite; }
 /* Keep the sprite anchored while an interaction draws replacement art. */
-.pet[data-action="feed"], .pet[data-action="stroke"], .pet[data-action="celebrate"] { transition: none; }
-.pet[data-action="feed"] img, .pet[data-action="stroke"] img, .pet[data-action="tilt"] img {
+.pet[data-action="feed"], .pet[data-action="playingBall"], .pet[data-action="stroke"], .pet[data-action="celebrate"] { transition: none; }
+.pet[data-action="feed"] img, .pet[data-action="stroke"] img,
+.pet[data-action="tilt"] img, .pet[data-action="playingBall"] img {
   animation: none;
   visibility: hidden;
 }
@@ -68,7 +69,20 @@ meter::-webkit-meter-optimum-value { background: #cbd198; }
   filter: drop-shadow(0 .35rem .3rem #251a1580);
   transform-origin: 34% 95%;
 }
-.pet[data-action="feed"] .pet-art, .pet[data-action="stroke"] .pet-art, .pet[data-action="tilt"] .pet-art { display: block; }
+.pet[data-action="feed"] .pet-art, .pet[data-action="stroke"] .pet-art,
+.pet[data-action="tilt"] .pet-art, .pet[data-action="playingBall"] .pet-art { display: block; }
+.pet[data-action="playingBall"] .pet-art { overflow: visible; }
+.toy-ball { display: none; }
+.pet[data-action="playingBall"] .toy-ball {
+  display: block;
+  animation: toy-ball-visibility var(--playingBall-duration) ease-in-out both;
+}
+.pet[data-action="playingBall"] .feeding-chest,
+.pet[data-action="playingBall"] .feeding-paw { opacity: 1; }
+@keyframes toy-ball-visibility {
+  0%, 100% { opacity: 0; }
+  8%, 86% { opacity: 1; }
+}
 .pet[data-action="stroke"] .pet-art { animation: stroke-sway var(--stroke-duration) ease-in-out both; }
 .pet[data-action="tilt"] .pet-art { animation: head-tilt var(--tilt-duration) ease-in-out both; }
 .pet[data-action="stretch"] img { animation: stretch var(--stretch-duration) ease-in-out both; }
@@ -229,18 +243,5 @@ button:disabled { opacity: .55; }
 #xp-progress { height: .75rem; overflow: hidden; border: 1px solid #666c54; border-radius: 1rem; background: #20241c; }
 .xp-fill { height: 100%; background: #cbd198; transform-origin: left; transform: scaleX(var(--xp-ratio, 0)); }
 @media (prefers-reduced-motion: no-preference) { .xp-fill { transition: transform .4s ease; } }
-.toy-ball {
-  position: absolute;
-  z-index: 1;
-  left: 55%;
-  top: 83%;
-  width: 6%;
-  aspect-ratio: 1;
-  border: 1px solid #80482e;
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #ffe3a2, #d78c51 48%, #90462f 85%);
-  box-shadow: .12rem .22rem .3rem #33221d90;
-  pointer-events: none;
-}
 .lock { display: block; margin-top: .2rem; color: #f1d79c; }
 #reset { margin-top: .65rem; padding-inline: .75rem; font-size: .875rem; }
