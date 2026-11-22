@@ -50,63 +50,47 @@ meter::-webkit-meter-optimum-value { background: #cbd198; }
 .pet[data-action="jump"] img { animation: jump .65s ease-in-out; }
 .pet[data-action="sleep"] img { animation-duration: 5s; transform: scaleY(.91); }
 .pet[data-action="groom"] img { animation: bob .55s ease-in-out infinite; }
-.pet[data-action="feed"] img {
-  transform: translate(-3%, 8%) rotate(-16deg);
-  animation: chew .56s .65s ease-in-out infinite;
-}
+.pet[data-action="feed"] img { animation: none; }
 .pet[data-action="pet"] img { animation: lean 1.2s ease-in-out infinite; }
 .pet[data-action="bath"] img { animation: enter-bath .65s ease-out, roll .72s .65s ease-in-out infinite alternate; }
 
-.hay, .bath, .bath-rim, .dust { position: absolute; pointer-events: none; }
-.hay {
-  z-index: 1;
-  left: 33%;
-  top: 87%;
-  width: 16%;
-  height: 5%;
-  transform: translate(-50%, -35%);
-  border-radius: 50%;
-  background: radial-gradient(ellipse at 48% 36%, #705336 49%, #ac7953 55%, #694b36 73%);
-  box-shadow: 0 .18rem .3rem #54371975;
-}
-.hay-stems {
-  position: absolute;
-  left: 10%;
-  bottom: 18%;
-  width: 80%;
-  height: 240%;
-  transform-origin: 60% 100%;
-  animation: tug .56s .65s ease-in-out infinite;
-}
-.hay-stems i {
-  position: absolute;
-  left: var(--base, 50%);
-  bottom: 0;
-  width: 3%;
-  height: var(--height, 100%);
-  border-radius: 60% 45% 10% 30%;
-  background: linear-gradient(90deg, #58633a, #c7ba73);
-  transform-origin: bottom;
-  transform: rotate(var(--angle));
-}
-.hay-stems i::before {
-  content: "";
-  position: absolute;
-  left: -65%;
-  top: 0;
-  width: 230%;
-  height: 28%;
-  border-radius: 65%;
-  background: repeating-linear-gradient(-25deg, #b29d5b 0 2px, #817b48 2px 3px);
-}
-.hay-stems i:nth-child(1) { --base: 42%; --height: 55%; --angle: -75deg; }
-.hay-stems i:nth-child(2) { --base: 51%; --height: 70%; --angle: -55deg; }
-.hay-stems i:nth-child(3) { --base: 39%; --height: 88%; --angle: -29deg; }
-.hay-stems i:nth-child(4) { --base: 48%; --height: 94%; --angle: 8deg; }
-.hay-stems i:nth-child(5) { --base: 54%; --height: 80%; --angle: 37deg; }
-.hay-stems i:nth-child(6) { --base: 58%; --height: 105%; --angle: 52deg; }
-.hay-stems i:nth-child(7) { --base: 66%; --height: 67%; --angle: 68deg; }
+.feeding { display: none; position: absolute; inset: 0; width: 100%; height: 100%; }
+.pet[data-action="feed"] .feeding { display: block; }
+.feeding-chest { animation: feeding-chest var(--feeding-duration) ease-in-out both; }
+.feeding-paw-left { --lift: translate(-52px, -67px); }
+.feeding-paw-right { --lift: translate(-62px, -66px); }
+.feeding-paw { animation: feeding-lift var(--feeding-duration) ease-in-out both; }
+.feeding-grass { animation: feeding-grass var(--feeding-duration) ease-in-out both; }
+.feeding-muzzle { transform-origin: 120px 219px; animation: feeding-chew var(--feeding-duration) ease-in-out both; }
+.feeding-blink { animation: feeding-blink var(--feeding-duration) linear both; }
 
+@keyframes feeding-chest {
+  0%, 100% { opacity: 0; }
+  12%, 83% { opacity: 1; }
+}
+@keyframes feeding-lift {
+  0%, 100% { transform: translate(0, 0); }
+  14%, 76% { transform: var(--lift); }
+}
+@keyframes feeding-grass {
+  0% { opacity: 0; transform: translate(48px, 66px) scale(.96); }
+  14% { opacity: 1; transform: scale(1); }
+  32% { transform: scale(.83); }
+  49% { transform: scale(.65); }
+  64% { opacity: 1; transform: scale(.41); }
+  76%, 100% { opacity: 0; transform: scale(.12); }
+}
+@keyframes feeding-chew {
+  0%, 12%, 80%, 100% { opacity: 0; transform: scale(.9, .6); }
+  19%, 32%, 45%, 58%, 71% { opacity: 1; transform: scale(1.1, 1.15); }
+  25%, 38%, 51%, 64%, 77% { opacity: .45; transform: scale(.96, .63); }
+}
+@keyframes feeding-blink {
+  0%, 82%, 96%, 100% { opacity: 0; }
+  87%, 91% { opacity: 1; }
+}
+
+.bath, .bath-rim, .dust { position: absolute; pointer-events: none; }
 .bath, .bath-rim {
   left: 61%;
   top: 87%;
@@ -142,8 +126,6 @@ meter::-webkit-meter-optimum-value { background: #cbd198; }
 .dust i:nth-child(2) { left: 48%; animation-delay: .9s; }
 .dust i:nth-child(3) { left: 70%; animation-delay: 1.2s; }
 
-@keyframes chew { 50% { transform: translate(-6%, 9%) rotate(-20deg); } }
-@keyframes tug { 50% { transform: rotate(7deg) scaleY(.87); } }
 @keyframes enter-bath { 45% { translate: 0 -20%; } }
 @keyframes dust-puff {
   25% { opacity: .75; }
@@ -176,7 +158,9 @@ button:disabled { opacity: .55; }
 @media (max-width: 380px) { button span { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   .pet { transition: none; }
-  .pet img, .pet[data-action] img, .hay-stems, .dust i { animation: none; }
+  .pet img, .pet[data-action] img, .feeding *, .dust i { animation: none; }
+  .feeding-paw { transform: var(--lift); }
+  .feeding-muzzle, .feeding-blink { opacity: 0; }
 }
 
 [hidden] { display: none !important; }
