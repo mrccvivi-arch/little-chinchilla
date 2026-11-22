@@ -284,15 +284,15 @@ function finishActivity() {
 }
 
 const care = {
-  feed: { action: ["feed", "floor", "吃提摩西草"], gain: 8, xp: 5, xpCooldown: 30000, text: "小银捧起提摩西草，慢慢嚼了起来。" },
-  pet: { action: ["stroke", "near", "闭上眼享受轻抚"], gain: 10, xp: 3, xpCooldown: 20000, text: "小银眯起眼睛，耳朵轻轻抖了抖。" },
-  toy: { action: ["playingBall", "floor", "用前爪推着小球玩"], xp: 1, xpCooldown: 30000, text: "小银伸出前爪，把小球推来推去。" },
+  feed: { action: ["feed", "floor", "吃提摩西草"], gain: 8, xp: 5, xpCooldown: 30000, text: "棉花糖捧起提摩西草，慢慢嚼了起来。" },
+  pet: { action: ["stroke", "near", "闭上眼享受轻抚"], gain: 10, xp: 3, xpCooldown: 20000, text: "棉花糖眯起眼睛，耳朵轻轻抖了抖。" },
+  toy: { action: ["playingBall", "floor", "用前爪推着小球玩"], xp: 1, xpCooldown: 30000, text: "棉花糖伸出前爪，把小球推来推去。" },
   come: { action: ["pet", "near", "主动靠近"], text: [
-    "小银小跑过来，停在你身边。",
-    "小银凑近嗅了嗅，在你旁边坐了下来。",
-    "小银来到你跟前，放松地伸了个懒腰。",
+    "棉花糖小跑过来，停在你身边。",
+    "棉花糖凑近嗅了嗅，在你旁边坐了下来。",
+    "棉花糖来到你跟前，放松地伸了个懒腰。",
   ] },
-  bath: { action: ["bath", "sand", "正在沙浴"], gain: 6, xp: 8, xpCooldown: 60000, text: "小银跳进浴盆，在细细的浴粉里打了个滚。" },
+  bath: { action: ["bath", "sand", "正在沙浴"], gain: 6, xp: 8, xpCooldown: 60000, text: "棉花糖跳进浴盆，在细细的浴粉里打了个滚。" },
 };
 
 function localDay(now) {
@@ -332,7 +332,7 @@ function applyCare(kind) {
   const interaction = care[kind];
   if (kind === "pet" && trust < 20) {
     showActivity("idle", "nest", "退到小窝旁");
-    message.textContent = "小银往后退了一点。等信任度达到 20，再试试轻轻抚摸。";
+    message.textContent = "棉花糖往后退了一点。等信任度达到 20，再试试轻轻抚摸。";
     showProgress();
     schedule(finishActivity, 2400);
     return;
