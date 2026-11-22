@@ -30,7 +30,6 @@
 
     <section class="room" aria-label="傍晚的龙猫小屋">
       <span class="activity" id="activity">观察四周</span>
-      <div class="toy-ball" aria-hidden="true" hidden></div>
       <div class="bath" aria-hidden="true" hidden></div>
       <div class="bath-rim" aria-hidden="true" hidden></div>
       <div class="dust" aria-hidden="true" hidden><i></i><i></i><i></i></div>
@@ -48,6 +47,11 @@
             <clipPath id="pet-ear">
               <path d="M218 128 C221 108 232 45 269 19 C305 -3 342 4 333 45 C325 92 298 126 267 146 Q246 149 218 128Z"/>
             </clipPath>
+            <radialGradient id="toy-ball-color" cx="32%" cy="28%" r="72%">
+              <stop stop-color="#ffe3a2"/>
+              <stop offset=".53" stop-color="#d78c51"/>
+              <stop offset="1" stop-color="#90462f"/>
+            </radialGradient>
             <radialGradient id="feeding-feather">
               <stop offset=".68" stop-color="white"/>
               <stop offset="1" stop-color="white" stop-opacity="0"/>
@@ -60,35 +64,44 @@
             </mask>
           </defs>
           <!-- Draw the body and all moving parts in the same sprite coordinates. -->
-          <use href="#feeding-fur"/>
-          <g class="pet-ear">
-            <use href="#feeding-fur" clip-path="url(#pet-ear)" transform="rotate(-3 248 138)"/>
-          </g>
-          <g class="feeding-chest" mask="url(#feeding-chest)">
-            <use href="#feeding-fur" x="-104" y="-7"/>
-          </g>
-          <g transform="translate(120 219)">
-            <g class="feeding-muzzle">
-              <ellipse cx="18" cy="-4" rx="16" ry="10" fill="#e9c3ae" opacity=".24"/>
-              <path d="M-11 1 Q0 8 12 1 Q2 13 -7 6Z" fill="#65493b"/>
+          <g class="toy-ball" transform="translate(94 410)">
+            <ellipse cy="33" rx="32" ry="8" fill="#543719" opacity=".42"/>
+            <g class="toy-ball-spin">
+              <circle r="34" fill="url(#toy-ball-color)" stroke="#80482e" stroke-width="2"/>
+              <path d="M-25 -23 Q3 -18 18 27 M-32 -7 Q-5 -14 24 -22" fill="none" stroke="#ffe9b6" stroke-width="3" opacity=".58"/>
             </g>
           </g>
-          <g transform="translate(139 253)">
-            <g class="feeding-grass" fill="none" stroke-linecap="round">
-              <path d="M0 0 Q-11 -39 -55 -54 M0 0 Q-11 -42 -38 -69 M0 0 Q-22 -22 -62 -30 M0 0 Q-4 -37 -14 -64 M0 0 Q-24 -26 -47 -37 M0 0 Q-7 -36 5 -52" stroke="#525934" stroke-width="8"/>
-              <path d="M0 0 Q-11 -40 -55 -54 M0 0 Q-11 -42 -38 -69 M0 0 Q-4 -37 -14 -64 M0 0 Q-24 -26 -47 -37" stroke="#bac575" stroke-width="4"/>
-              <path d="M-57 -55l-7 -4 M-38 -69l-4 -7 M-14 -64l-2 -7 M5 -52l4 -7" stroke="#d6c88a" stroke-width="7"/>
+          <g class="pet-pose">
+            <use href="#feeding-fur"/>
+            <g class="pet-ear">
+              <use href="#feeding-fur" clip-path="url(#pet-ear)" transform="rotate(-3 248 138)"/>
             </g>
-          </g>
-          <g class="feeding-paw">
-            <use href="#feeding-fur" clip-path="url(#feeding-left-paw)"/>
-          </g>
-          <g class="feeding-paw">
-            <use href="#feeding-fur" clip-path="url(#feeding-right-paw)"/>
-          </g>
-          <g class="pet-eyes">
-            <g mask="url(#feeding-eye)"><use href="#feeding-fur" y="-25"/></g>
-            <path d="M169 155 Q184 165 197 150" fill="none" stroke="#51453b" stroke-width="3.5" stroke-linecap="round"/>
+            <g class="feeding-chest" mask="url(#feeding-chest)">
+              <use href="#feeding-fur" x="-104" y="-7"/>
+            </g>
+            <g transform="translate(120 219)">
+              <g class="feeding-muzzle">
+                <ellipse cx="18" cy="-4" rx="16" ry="10" fill="#e9c3ae" opacity=".24"/>
+                <path d="M-11 1 Q0 8 12 1 Q2 13 -7 6Z" fill="#65493b"/>
+              </g>
+            </g>
+            <g transform="translate(139 253)">
+              <g class="feeding-grass" fill="none" stroke-linecap="round">
+                <path d="M0 0 Q-11 -39 -55 -54 M0 0 Q-11 -42 -38 -69 M0 0 Q-22 -22 -62 -30 M0 0 Q-4 -37 -14 -64 M0 0 Q-24 -26 -47 -37 M0 0 Q-7 -36 5 -52" stroke="#525934" stroke-width="8"/>
+                <path d="M0 0 Q-11 -40 -55 -54 M0 0 Q-11 -42 -38 -69 M0 0 Q-4 -37 -14 -64 M0 0 Q-24 -26 -47 -37" stroke="#bac575" stroke-width="4"/>
+                <path d="M-57 -55l-7 -4 M-38 -69l-4 -7 M-14 -64l-2 -7 M5 -52l4 -7" stroke="#d6c88a" stroke-width="7"/>
+              </g>
+            </g>
+            <g class="feeding-paw">
+              <use href="#feeding-fur" clip-path="url(#feeding-left-paw)"/>
+            </g>
+            <g class="feeding-paw">
+              <use href="#feeding-fur" clip-path="url(#feeding-right-paw)"/>
+            </g>
+            <g class="pet-eyes">
+              <g mask="url(#feeding-eye)"><use href="#feeding-fur" y="-25"/></g>
+              <path d="M169 155 Q184 165 197 150" fill="none" stroke="#51453b" stroke-width="3.5" stroke-linecap="round"/>
+            </g>
           </g>
         </svg>
         <svg class="pet-hand" viewBox="0 0 162 94" focusable="false">
