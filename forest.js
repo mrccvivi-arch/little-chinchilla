@@ -29,6 +29,7 @@ function createForestScene(root, onStop, onNearby) {
     const marker = document.createElement("span");
     marker.className = "forest-marker";
     marker.dataset.type = spot.type;
+    marker.dataset.label = spot.type === "leaves" ? "落叶堆" : forestItems[spot.common].name;
     marker.setAttribute("aria-hidden", "true");
     world.insertBefore(marker, pet);
     return marker;

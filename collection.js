@@ -10,7 +10,7 @@ const forestItems = {
 };
 
 const forestSpots = [
-  { id: "trail-pine", x: 0.16, type: "pine", name: "松果旁", common: "pinecone", rare: "amberCone" },
+  { id: "trail-pine", x: 0.14, type: "pine", name: "松果旁", common: "pinecone", rare: "amberCone" },
   { id: "fern-mushroom", x: 0.35, type: "mushroom", name: "蕨叶下的蘑菇", common: "mushroom", rare: "silverCap" },
   { id: "leaf-pile", x: 0.52, type: "leaves", name: "落叶堆", common: "leaf", rare: "goldenLeaf" },
   { id: "moss-pine", x: 0.70, type: "pine", name: "苔藓旁的松果", common: "pinecone", rare: "amberCone" },
@@ -75,7 +75,7 @@ function createCollectionView(onChange) {
     clearTimeout(refreshTimer);
     if (!nearby) {
       search.disabled = true;
-      hint.textContent = "靠近松果、蘑菇或落叶堆，就能探索。";
+      hint.textContent = "沿小径靠近有名称的标记，再点「探索」。";
       return;
     }
     const now = Date.now();
