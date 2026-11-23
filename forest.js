@@ -75,7 +75,11 @@ function createForestScene(root, onStop, onNearby) {
     world.style.transform = `translate3d(${-camera}px, 0, 0)`;
     pet.style.transform = `translate3d(${x - edge}px, 0, 0)`;
     pet.style.setProperty("--facing", facing);
-    gateButton.hidden = position < meadowGateAt;
+    const gateLocked = position < meadowGateAt;
+    if (gateButton.disabled !== gateLocked) {
+      gateButton.disabled = gateLocked;
+      gateButton.textContent = gateLocked ? "云野在右端 →" : "进入云野";
+    }
     updateNearby(forestSpots.findIndex((spot) => Math.abs(spot.x - position) <= 0.047));
   }
 
