@@ -10,6 +10,7 @@ function readWorld(saved) {
 
   return {
     ...saved,
+    collection: readCollection(saved?.collection),
     scene: saved?.scene === "forest" ? "forest" : "cabin",
     forest: {
       ...region,
@@ -19,11 +20,20 @@ function readWorld(saved) {
   };
 }
 
-function createForestScene(root, onStop) {
+function createForestScene(root, onStop, onNearby) {
   const viewport = root.querySelector(".forest-viewport");
   const world = root.querySelector(".forest-world");
   const pet = root.querySelector(".forest-pet");
   const inputs = new Map();
+  const markers = forestSpots.map((spot) => {
+    const marker = document.createElement("span");
+    marker.className = "forest-marker";
+    marker.dataset.type = spot.type;
+    marker.setAttribute("aria-hidden", "true");
+    world.insertBefore(marker, pet);
+    return marker;
+  });
+  let nearbyIndex = -1;
   let active = false;
   let position = forestRegion.entrance;
   let lastSavedPosition = position;
@@ -40,7 +50,18 @@ function createForestScene(root, onStop) {
     regionWidth = world.offsetWidth;
     viewportWidth = viewport.clientWidth;
     distance = Math.max(1, regionWidth - edge * 2);
+    forestSpots.forEach((spot, index) => {
+      markers[index].style.left = (edge + spot.x * distance) + "px";
+    });
     render();
+  }
+
+  function updateNearby(index) {
+    if (nearbyIndex === index) return;
+    markers[nearbyIndex]?.classList.remove("is-nearby");
+    nearbyIndex = index;
+    markers[index]?.classList.add("is-nearby");
+    onNearby(forestSpots[index]);
   }
 
   function render() {
@@ -49,6 +70,7 @@ function createForestScene(root, onStop) {
     world.style.transform = `translate3d(${-camera}px, 0, 0)`;
     pet.style.transform = `translate3d(${x - edge}px, 0, 0)`;
     pet.style.setProperty("--facing", facing);
+    updateNearby(forestSpots.findIndex((spot) => Math.abs(spot.x - position) <= 0.047));
   }
 
   function savePosition() {
@@ -152,6 +174,7 @@ function createForestScene(root, onStop) {
       inputs.clear();
       stop();
       active = false;
+      updateNearby(-1);
     },
     getPosition() { return position; },
   };

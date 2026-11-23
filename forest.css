@@ -109,3 +109,71 @@
   user-select: none;
 }
 .forest-controls .hint { margin: 0; text-align: center; }
+
+.forest-marker, .cabin-ornament {
+  position: absolute;
+  width: 1.5rem;
+  height: 1.55rem;
+  border-radius: 48% 48% 45% 45%;
+  background: repeating-linear-gradient(150deg, #a36c3d 0 4px, #684427 5px 7px);
+  box-shadow: .1rem .14rem .25rem #311f17a0;
+  pointer-events: none;
+}
+.forest-marker {
+  bottom: 17%;
+  transform: translateX(-50%) scale(.8);
+}
+.forest-marker.is-nearby {
+  outline: 2px solid #fff1be;
+  outline-offset: .2rem;
+}
+.forest-marker[data-type="mushroom"] {
+  border-radius: 50% 50% 40% 40%;
+  background: radial-gradient(circle at 37% 25%, #fff2c3 7%, transparent 9%),
+    radial-gradient(circle at 65% 42%, #fff2c3 7%, transparent 9%),
+    linear-gradient(#a64d31 0 67%, #e5ca9f 68%);
+}
+.forest-marker[data-type="leaves"] {
+  width: 2.2rem;
+  height: .95rem;
+  border-radius: 100% 10% 100% 25%;
+  background: linear-gradient(24deg, #8c402b 20%, #e29049 42%, #aa5831 50%, #edb766 90%);
+}
+.cabin-ornament {
+  top: 43%;
+  left: 58%;
+  transform: translateY(-100%) scale(.76);
+  transform-origin: center bottom;
+}
+.explore-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .75rem;
+}
+.explore-controls p, #decoration-status { margin: .2rem 0; font-size: .9rem; line-height: 1.4; }
+#explore-result:empty, #decoration-status:empty { margin: 0; }
+.explore-controls button { min-width: 5.5rem; }
+.collection-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  align-items: start;
+  gap: .65rem;
+  margin-top: .85rem;
+}
+.collection-panels details {
+  padding: 0 .8rem;
+  border: 1px solid #858b6d;
+  border-radius: .85rem;
+  background: #333b2b;
+}
+.collection-panels summary {
+  min-height: 2.9rem;
+  padding: .8rem 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.collection-panels ul { margin: 0 0 .75rem; padding-inline-start: 1.35rem; line-height: 1.55; }
+.collection-panels button { margin-bottom: .55rem; padding-inline: .7rem; }
+#guide-count { color: #cfceb9; font-size: .875rem; margin-inline-start: .35rem; }
