@@ -76,10 +76,14 @@ const cabinPanels = document.querySelectorAll("#cabin-room, #cabin-care");
 const forestRoot = document.querySelector("#forest");
 const enterForest = document.querySelector("#enter-forest");
 const returnCabin = document.querySelector("#return-cabin");
+const collectionView = createCollectionView(() => {
+  if (displayedScene === "forest") worldState.forest.position = forestScene.getPosition();
+  saveProgress();
+});
 const forestScene = createForestScene(forestRoot, (position) => {
   worldState.forest.position = position;
   saveProgress();
-});
+}, collectionView.setNearby);
 
 function levelForXp(total) {
   for (let index = levelThresholds.length - 1; index >= 0; index--) {
@@ -379,13 +383,15 @@ function applyCare(kind) {
 }
 
 reset.addEventListener("click", () => {
-  if (!window.confirm("确定重置进度吗？经验和信任度都会归零。")) return;
+  if (!window.confirm("确定重置进度吗？经验、信任度和森林收藏都会清空。")) return;
   busy = false;
   lastActivity = undefined;
   lastInteraction = Date.now();
   xp = 0;
   trust = 0;
   worldState = readWorld();
+  collectionView.clearResult();
+  collectionView.showCollections(worldState.collection);
   saveProgress();
   showProgress();
   showActivity("idle", "floor", "观察四周");
@@ -396,6 +402,7 @@ reset.addEventListener("click", () => {
 function showScene(moveFocus = false) {
   if (displayedScene === worldState.scene) return;
   displayedScene = worldState.scene;
+  collectionView.clearResult();
   const outdoors = displayedScene === "forest";
   cabinPanels.forEach((panel) => { panel.hidden = outdoors; });
   forestRoot.hidden = !outdoors;
@@ -431,6 +438,7 @@ window.addEventListener("storage", (event) => {
   if (event.key !== saveKey || event.storageArea !== localStorage || !event.newValue) return;
   loadProgress();
   showProgress();
+  collectionView.showCollections(worldState.collection);
   showScene();
 });
 document.addEventListener("visibilitychange", () => {
@@ -440,4 +448,5 @@ document.addEventListener("visibilitychange", () => {
 });
 if (loadProgress()) saveProgress();
 showProgress();
+collectionView.showCollections(worldState.collection);
 showScene();

@@ -7,6 +7,7 @@
   <title>绵绵云</title>
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./forest.css">
+  <script src="./collection.js" defer></script>
   <script src="./forest.js" defer></script>
   <script src="./game.js" defer></script>
 </head>
@@ -35,6 +36,7 @@
         <span class="door-panel" aria-hidden="true"></span>
         <span class="door-label">去森林</span>
       </button>
+      <div id="cabin-ornament" class="cabin-ornament" aria-label="松果摆件" role="img" hidden></div>
       <span class="activity" id="activity">观察四周</span>
       <div class="bath" aria-hidden="true" hidden></div>
       <div class="bath-rim" aria-hidden="true" hidden></div>
@@ -149,7 +151,23 @@
         <p class="hint">长按按钮或方向键移动</p>
         <button type="button" data-move="1" aria-label="向右移动">向右 →</button>
       </div>
+      <div class="explore-controls">
+        <div><p id="explore-hint"></p><p id="explore-result" role="status"></p></div>
+        <button id="explore-spot" type="button" disabled>探索</button>
+      </div>
     </section>
+    <div class="collection-panels">
+      <details>
+        <summary>背包</summary>
+        <ul id="bag-items"></ul>
+        <button id="decorate-cabin" type="button" disabled>制作松果摆件 · 2 松果</button>
+        <p id="decoration-status" role="status"></p>
+      </details>
+      <details>
+        <summary>森林图鉴 <span id="guide-count"></span></summary>
+        <ul id="guide-items"></ul>
+      </details>
+    </div>
     <p id="save-warning" hidden>浏览器无法保存进度，本次进度只在当前页面保留。</p>
   </main>
 </body>
