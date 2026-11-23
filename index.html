@@ -7,7 +7,9 @@
   <title>绵绵云</title>
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./forest.css">
+  <link rel="stylesheet" href="./meadow/meadow.css">
   <script src="./collection.js" defer></script>
+  <script src="./meadow-state.js" defer></script>
   <script src="./forest.js" defer></script>
   <script src="./game.js" defer></script>
 </head>
@@ -137,10 +139,14 @@
     <section class="forest" id="forest" aria-labelledby="forest-title" hidden>
       <div class="forest-heading">
         <h2 id="forest-title" tabindex="-1">林间小径</h2>
-        <button id="return-cabin" type="button">返回小屋</button>
+        <div class="forest-navigation">
+          <button id="return-cabin" type="button">返回小屋</button>
+          <button id="enter-meadow" type="button" hidden>进入云野</button>
+        </div>
       </div>
       <div class="forest-viewport" aria-label="棉花糖在林间小径上">
         <div class="forest-world">
+          <span class="forest-gate" aria-hidden="true">云野入口</span>
           <div class="forest-pet" aria-hidden="true">
             <img src="./assets/chinchilla.webp" width="720" height="480" alt="" draggable="false">
           </div>
@@ -155,6 +161,18 @@
         <div><p id="explore-hint"></p><p id="explore-result" role="status"></p></div>
         <button id="explore-spot" type="button" disabled>探索</button>
       </div>
+    </section>
+    <section id="meadow" aria-labelledby="meadow-title" hidden>
+      <div class="meadow-heading">
+        <h2 id="meadow-title" tabindex="-1">云野</h2>
+        <button id="leave-meadow" type="button">返回森林</button>
+      </div>
+      <div class="meadow-stage">
+        <div class="meadow-joystick" aria-hidden="true"><span></span></div>
+        <button id="meadow-interact" type="button" disabled>互动</button>
+      </div>
+      <p class="hint">左侧摇杆移动，拖动右侧旋转视角。键盘用 WASD，鼠标可拖动画面。</p>
+      <p id="meadow-status" role="status"></p>
     </section>
     <div class="collection-panels">
       <details>

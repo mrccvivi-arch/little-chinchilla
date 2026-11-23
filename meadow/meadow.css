@@ -1,0 +1,81 @@
+.forest-navigation, .meadow-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .4rem;
+}
+.forest-navigation button { padding-inline: clamp(.4rem, 2vw, .9rem); }
+.forest-gate {
+  position: absolute;
+  bottom: 17%;
+  width: 4.4rem;
+  height: 4.8rem;
+  display: grid;
+  place-items: center;
+  transform: translateX(-50%);
+  border: .26rem solid #855c40;
+  border-radius: 55% 55% .25rem .25rem;
+  background: radial-gradient(ellipse at bottom, #f5eabf, #7d9b82);
+  box-shadow: 0 .2rem .4rem #32241680;
+  color: #2b3629;
+  font-weight: 700;
+  font-size: .8rem;
+  white-space: nowrap;
+}
+.meadow-heading { margin-bottom: .75rem; }
+.meadow-heading h2 { margin: 0; font: 500 clamp(1.3rem, 4vw, 2rem)/1.2 Georgia, serif; }
+.meadow-heading button { padding-inline: .9rem; }
+.meadow-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: 2 / 1;
+  min-height: 16rem;
+  border: 1px solid #888267;
+  border-radius: 1.5rem;
+  background: linear-gradient(#bbdce2, #87a77e);
+  box-shadow: 0 .8rem 2rem #16190f66;
+}
+.meadow-stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+#meadow[data-ready="false"] .meadow-stage,
+#meadow[data-ready="false"] .hint,
+#meadow[data-ready="loading"] .meadow-joystick,
+#meadow[data-ready="loading"] #meadow-interact { display: none; }
+#meadow-status { min-height: 1.35em; margin: .45rem 0; }
+.meadow-joystick {
+  position: absolute;
+  bottom: clamp(.65rem, 3vw, 1.5rem);
+  left: clamp(.65rem, 3vw, 1.5rem);
+  width: clamp(4.25rem, 14vw, 6.5rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  border: 1px solid #fff0c6c9;
+  border-radius: 50%;
+  background: #26362589;
+  cursor: grab;
+}
+.meadow-joystick span {
+  pointer-events: none;
+  width: 45%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #f3e4b8e8;
+  box-shadow: 0 .2rem .35rem #2632248f;
+}
+#meadow-interact {
+  position: absolute;
+  bottom: clamp(.65rem, 3vw, 1.5rem);
+  right: clamp(.65rem, 3vw, 1.5rem);
+  min-width: 4.4rem;
+  padding-inline: .75rem;
+  background: #344532ee;
+}
+#meadow-interact:disabled {
+  opacity: 1;
+  background: #34453292;
+  color: #f5ecdbd0;
+}

@@ -76,6 +76,12 @@ const cabinPanels = document.querySelectorAll("#cabin-room, #cabin-care");
 const forestRoot = document.querySelector("#forest");
 const enterForest = document.querySelector("#enter-forest");
 const returnCabin = document.querySelector("#return-cabin");
+const meadowRoot = document.querySelector("#meadow");
+const enterMeadow = document.querySelector("#enter-meadow");
+const leaveMeadow = document.querySelector("#leave-meadow");
+const meadowStatus = document.querySelector("#meadow-status");
+let meadow;
+let meadowRequest = 0;
 const collectionView = createCollectionView(() => {
   if (displayedScene === "forest") worldState.forest.position = forestScene.getPosition();
   saveProgress();
@@ -399,31 +405,86 @@ reset.addEventListener("click", () => {
   schedule(autonomousActivity, 4500);
 });
 
+function meadowUnavailable(text) {
+  if (meadow) worldState.meadow.player = meadow.getPlayer();
+  meadow?.dispose();
+  meadow = undefined;
+  meadowRoot.dataset.ready = "false";
+  meadowStatus.textContent = text;
+}
+
+async function startMeadow() {
+  const request = ++meadowRequest;
+  meadowRoot.dataset.ready = "loading";
+  meadowStatus.textContent = "正在进入云野…";
+  try {
+    const { openMeadow } = await import("./meadow/scene.js");
+    if (request !== meadowRequest) return;
+    meadow = openMeadow(meadowRoot, {
+      player: worldState.meadow.player,
+      spawn: meadowSpawn,
+      bounds: meadowBounds,
+      onSave(player) {
+        if (displayedScene !== "meadow") return;
+        worldState.meadow.player = player;
+        saveProgress();
+      },
+      onReturn: () => navigateTo("forest"),
+      onError: meadowUnavailable,
+    });
+    meadowRoot.dataset.ready = "true";
+    meadowStatus.textContent = "";
+  } catch {
+    if (request === meadowRequest) {
+      meadowUnavailable("此设备暂时无法打开云野的 3D 画面。你可以返回森林，继续原来的游戏。");
+    }
+  }
+}
+
 function showScene(moveFocus = false) {
   if (displayedScene === worldState.scene) return;
+  const previous = displayedScene;
   displayedScene = worldState.scene;
   collectionView.clearResult();
-  const outdoors = displayedScene === "forest";
-  cabinPanels.forEach((panel) => { panel.hidden = outdoors; });
-  forestRoot.hidden = !outdoors;
+  const inCabin = displayedScene === "cabin";
+  const inForest = displayedScene === "forest";
+  cabinPanels.forEach((panel) => { panel.hidden = !inCabin; });
+  forestRoot.hidden = !inForest;
+  meadowRoot.hidden = displayedScene !== "meadow";
 
-  if (outdoors) {
-    clearTimeout(activityTimer);
-    busy = false;
-    showActivity("idle", "floor", "观察四周");
-    updateButtons();
-    forestScene.show(worldState.forest.position);
-    if (moveFocus) document.querySelector("#forest-title").focus();
-  } else {
-    forestScene.hide();
+  if (previous === "meadow") {
+    meadowRequest++;
+    meadow?.dispose();
+    meadow = undefined;
+  }
+  if (!inForest) forestScene.hide();
+  if (inCabin) {
     schedule(autonomousActivity, 4500);
     if (moveFocus) enterForest.focus();
+    return;
+  }
+  clearTimeout(activityTimer);
+  busy = false;
+  showActivity("idle", "floor", "观察四周");
+  updateButtons();
+  if (inForest) {
+    forestScene.show(worldState.forest.position);
+    if (moveFocus) (previous === "meadow" && !enterMeadow.hidden
+      ? enterMeadow : document.querySelector("#forest-title")).focus();
+  } else {
+    startMeadow();
+    if (moveFocus) document.querySelector("#meadow-title").focus();
   }
 }
 
 function navigateTo(scene) {
   if (busy || displayedScene === scene) return;
-  if (displayedScene === "forest") worldState.forest.position = forestScene.getPosition();
+  if (displayedScene === "forest") {
+    const position = forestScene.getPosition();
+    if (scene === "meadow" && position < meadowGateAt) return;
+    worldState.forest.position = position;
+  }
+  if (displayedScene === "meadow" && meadow) worldState.meadow.player = meadow.getPlayer();
   worldState.scene = scene;
   showScene(true);
   saveProgress();
@@ -431,6 +492,8 @@ function navigateTo(scene) {
 
 enterForest.addEventListener("click", () => navigateTo("forest"));
 returnCabin.addEventListener("click", () => navigateTo("cabin"));
+enterMeadow.addEventListener("click", () => navigateTo("meadow"));
+leaveMeadow.addEventListener("click", () => navigateTo("forest"));
 buttons.forEach((button) => {
   button.addEventListener("click", () => applyCare(button.dataset.care));
 });
