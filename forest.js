@@ -11,7 +11,8 @@ function readWorld(saved) {
   return {
     ...saved,
     collection: readCollection(saved?.collection),
-    scene: saved?.scene === "forest" ? "forest" : "cabin",
+    scene: ["forest", "meadow"].includes(saved?.scene) ? saved.scene : "cabin",
+    meadow: readMeadow(saved?.meadow),
     forest: {
       ...region,
       regionId: forestRegion.id,
@@ -24,6 +25,8 @@ function createForestScene(root, onStop, onNearby) {
   const viewport = root.querySelector(".forest-viewport");
   const world = root.querySelector(".forest-world");
   const pet = root.querySelector(".forest-pet");
+  const gate = root.querySelector(".forest-gate");
+  const gateButton = root.querySelector("#enter-meadow");
   const inputs = new Map();
   const markers = forestSpots.map((spot) => {
     const marker = document.createElement("span");
@@ -51,6 +54,7 @@ function createForestScene(root, onStop, onNearby) {
     regionWidth = world.offsetWidth;
     viewportWidth = viewport.clientWidth;
     distance = Math.max(1, regionWidth - edge * 2);
+    gate.style.left = (edge + .97 * distance) + "px";
     forestSpots.forEach((spot, index) => {
       markers[index].style.left = (edge + spot.x * distance) + "px";
     });
@@ -71,6 +75,7 @@ function createForestScene(root, onStop, onNearby) {
     world.style.transform = `translate3d(${-camera}px, 0, 0)`;
     pet.style.transform = `translate3d(${x - edge}px, 0, 0)`;
     pet.style.setProperty("--facing", facing);
+    gateButton.hidden = position < meadowGateAt;
     updateNearby(forestSpots.findIndex((spot) => Math.abs(spot.x - position) <= 0.047));
   }
 
