@@ -5,6 +5,8 @@
   gap: .4rem;
 }
 .forest-navigation button { padding-inline: clamp(.4rem, 2vw, .9rem); }
+#enter-meadow { white-space: nowrap; }
+#enter-meadow:disabled { opacity: .85; color: #ead9ad; }
 .forest-gate {
   position: absolute;
   bottom: 17%;

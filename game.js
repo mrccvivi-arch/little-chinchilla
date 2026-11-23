@@ -469,7 +469,7 @@ function showScene(moveFocus = false) {
   updateButtons();
   if (inForest) {
     forestScene.show(worldState.forest.position);
-    if (moveFocus) (previous === "meadow" && !enterMeadow.hidden
+    if (moveFocus) (previous === "meadow" && !enterMeadow.disabled
       ? enterMeadow : document.querySelector("#forest-title")).focus();
   } else {
     startMeadow();
