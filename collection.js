@@ -29,14 +29,19 @@ function readCollection(saved) {
   const known = Array.isArray(saved?.discovered) ? saved.discovered : [];
   const discovered = [...new Set([...known.filter((id) => typeof id === "string" && Object.prototype.hasOwnProperty.call(forestItems, id)), ...Object.keys(inventory)])];
   const searchedAt = {};
+  const lastSearchFound = {};
   for (const spot of forestSpots) {
     const time = saved?.searchedAt?.[spot.id];
-    if (Number.isSafeInteger(time) && time > 0) searchedAt[spot.id] = time;
+    if (Number.isSafeInteger(time) && time > 0) {
+      searchedAt[spot.id] = time;
+      if (saved?.lastSearchFound?.[spot.id] === true) lastSearchFound[spot.id] = true;
+    }
   }
   return {
     inventory,
     discovered,
     searchedAt,
+    lastSearchFound,
     ornamentOwned: saved?.ornamentOwned === true,
     ornamentPlaced: saved?.ornamentOwned === true && saved?.ornamentPlaced === true,
   };
@@ -50,6 +55,7 @@ function searchSpot(collection, spot, now, roll = Math.random()) {
   if (!canSearch(collection, spot, now)) return null;
   collection.searchedAt[spot.id] = now;
   const itemId = roll < 0.10 ? spot.rare : roll < 0.85 ? spot.common : null;
+  collection.lastSearchFound[spot.id] = itemId !== null;
   if (itemId) {
     collection.inventory[itemId] = Math.min(Number.MAX_SAFE_INTEGER, (collection.inventory[itemId] ?? 0) + 1);
     if (!collection.discovered.includes(itemId)) collection.discovered.push(itemId);
@@ -57,7 +63,7 @@ function searchSpot(collection, spot, now, roll = Math.random()) {
   return { itemId };
 }
 
-function createCollectionView(onChange) {
+function createCollectionView(onChange, onDepletionChange) {
   const search = document.querySelector("#explore-spot");
   const hint = document.querySelector("#explore-hint");
   const result = document.querySelector("#explore-result");
@@ -73,17 +79,21 @@ function createCollectionView(onChange) {
 
   function showSearch() {
     clearTimeout(refreshTimer);
-    if (!nearby) {
-      search.disabled = true;
-      hint.textContent = "沿小径靠近有名称的标记，再点「探索」。";
-      return;
-    }
     const now = Date.now();
-    search.disabled = !canSearch(collection, nearby, now);
-    hint.textContent = search.disabled ? nearby.name + " · 刚找过，过一会儿再来。" : nearby.name + " · 可以探索";
-    if (search.disabled) {
-      const remaining = collection.searchedAt[nearby.id] + searchRest - now;
-      refreshTimer = setTimeout(showSearch, Math.min(remaining, searchRest));
+    const depleted = forestSpots.filter((spot) => collection.lastSearchFound[spot.id] && !canSearch(collection, spot, now));
+    onDepletionChange(new Set(depleted.map((spot) => spot.id)));
+
+    search.disabled = !nearby || !canSearch(collection, nearby, now);
+    if (!nearby) {
+      hint.textContent = "沿小径靠近有名称的标记，再点「探索」。";
+    } else {
+      hint.textContent = search.disabled ? nearby.name + " · 刚找过，过一会儿再来。" : nearby.name + " · 可以探索";
+    }
+
+    const cooling = nearby && search.disabled ? [...depleted, nearby] : depleted;
+    if (cooling.length) {
+      const next = Math.min(...cooling.map((spot) => collection.searchedAt[spot.id] + searchRest - now));
+      refreshTimer = setTimeout(showSearch, Math.min(next, searchRest));
     }
   }
 

@@ -79,7 +79,7 @@ const returnCabin = document.querySelector("#return-cabin");
 const collectionView = createCollectionView(() => {
   if (displayedScene === "forest") worldState.forest.position = forestScene.getPosition();
   saveProgress();
-});
+}, (depleted) => forestScene.showAvailableMarkers(depleted));
 const forestScene = createForestScene(forestRoot, (position) => {
   worldState.forest.position = position;
   saveProgress();

@@ -178,5 +178,10 @@ function createForestScene(root, onStop, onNearby) {
       updateNearby(-1);
     },
     getPosition() { return position; },
+    showAvailableMarkers(depleted) {
+      forestSpots.forEach((spot, index) => {
+        markers[index].hidden = depleted.has(spot.id);
+      });
+    },
   };
 }
